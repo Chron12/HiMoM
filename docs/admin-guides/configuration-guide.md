@@ -103,7 +103,7 @@ These are stored in the database and configured through the Settings page:
 | Critical grams | Integer | 50 | Gram level that triggers a critical notification |
 | Cooldown hours | Integer | 24 | Minimum hours between repeated notifications for the same package |
 
-[SCREENSHOT: PreRollTracker Settings page showing the Pushover notification configuration section]
+![PreRollTracker Settings page showing the Pushover notification configuration section](../screenshots/settings-full.png)
 
 ---
 
@@ -318,7 +318,7 @@ Notifications are sent via the Pushover service (https://pushover.net).
    - Cooldown hours: Minimum time between repeated alerts for the same package (default: 24 hours).
 7. **Test the configuration** by triggering a manual backup failure or checking a finished goods package near the threshold.
 
-[SCREENSHOT: Pushover configuration section in PreRollTracker Settings showing User Key, App Token, and threshold fields]
+![Pushover configuration section in PreRollTracker Settings showing User Key, App Token, and threshold fields](../screenshots/settings-full.png)
 
 ### 6.3 Backup Failure Notifications
 

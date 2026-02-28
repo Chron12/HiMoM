@@ -127,7 +127,7 @@ Before setting up the integration:
 9. **Restart ApexAPI** (close and reopen the application).
 10. Check the connection status indicator in ApexAPI. It should show a green "Connected" status.
 
-[SCREENSHOT: PreRollTracker Settings page with the API key visible and a copy button highlighted]
+![PreRollTracker Settings page with the API key visible and a copy button highlighted](../screenshots/settings-full.png)
 
 [SCREENSHOT: ApexAPI main window showing green connection status for the Dashboard]
 

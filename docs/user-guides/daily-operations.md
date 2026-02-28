@@ -19,7 +19,7 @@ Every work day should start by checking the Production Dashboard to see what nee
 - **Red alert banners** -- If you see a red banner, it means a batch has been waiting on testing for a long time. Your supervisor may need to follow up with the lab.
 - **Stage colors** -- Quickly scan the colored stage badges to understand the overall status of all batches.
 
-[SCREENSHOT: The Production Dashboard at the start of the day showing multiple batches in various stages]
+![The Production Dashboard at the start of the day showing multiple batches in various stages](../screenshots/dashboard.png)
 
 ### If Something Goes Wrong
 - **The page shows old data** -- Pull down to refresh on a phone, or press the **F5** key on a computer keyboard. This reloads the latest data.
@@ -44,7 +44,7 @@ Every batch of pre-rolls moves through stages in order. Knowing what each stage 
 
 The system moves through these stages in order. Some transitions happen automatically (for example, when you finish grinding all the grams, the stage may advance from "Not ground" to "Ground" on its own). Other transitions need to be done by hand.
 
-[SCREENSHOT: A batch card showing the stage badge and the stage name]
+![A batch card showing the stage badge and the stage name](../screenshots/dashboard.png)
 
 ---
 
@@ -66,7 +66,7 @@ This is the most important thing you do in the app. When you make pre-rolls, you
 
 **What You'll See:** The number in the field changes. The total pre-rolls count at the top of the batch updates to show the sum across all three sizes.
 
-[SCREENSHOT: The Edit Batch page with the production count fields for 0.5g, 0.7g, and 1.0g]
+![The Edit Batch page with the production count fields for 0.5g, 0.7g, and 1.0g](../screenshots/edit-batch-counts.png)
 
 ### Important Notes About Counting
 - Always enter the **total** count, not just the number made since your last entry. If you had 200 and made 50 more, type **250**.
@@ -92,7 +92,7 @@ When a batch reaches the next step in the process, you need to update its stage.
 
 **What You'll See:** The stage badge on the dashboard will change to the new color and name.
 
-[SCREENSHOT: The stage dropdown on the Edit Batch page showing all available stages]
+![The stage dropdown on the Edit Batch page showing all available stages](../screenshots/edit-batch-top.png)
 
 ### Automatic Stage Changes
 Some stage changes happen automatically:
@@ -131,7 +131,7 @@ The system adds up the time from all sessions to calculate your **total work hou
    - When the batch started production
    - When the batch was finished (if applicable)
 
-[SCREENSHOT: The production time section on the Edit Batch page showing total work hours and session information]
+![The production time section on the Edit Batch page showing total work hours and session information](../screenshots/edit-batch-counts.png)
 
 ### If Something Goes Wrong
 - **The timer seems wrong** -- The timer runs based on when the stage was changed. If someone forgot to change the stage back to "Ground" during a break, the timer may include break time. Ask your supervisor to adjust if needed.
@@ -156,13 +156,13 @@ If your production process uses a centrifuge, you can record the settings used f
 
 **What You'll See:** The centrifuge settings are saved and will appear on the batch detail page.
 
-[SCREENSHOT: The centrifuge settings section on the Edit Batch page with fields for RPM, time, cycles, and fill gauge]
+![The centrifuge settings section on the Edit Batch page with fields for RPM, time, cycles, and fill gauge](../screenshots/edit-batch-centrifuge-settings.png)
 
 ### Centrifuge Recommendations
 
 After enough batches of the same strain have been processed, the system can recommend centrifuge settings based on past results. Look for a **Recommendations** section or link on the batch edit page. You can also visit the **Centrifuge** page from the navigation menu to use the force calculator tool.
 
-[SCREENSHOT: A centrifuge recommendation card showing suggested settings based on previous batches]
+![A centrifuge recommendation card showing suggested settings based on previous batches](../screenshots/edit-batch-centrifuge.png)
 
 ### If Something Goes Wrong
 - **There are no recommendations** -- The system needs data from at least a few completed batches of the same strain before it can make recommendations. Keep recording settings and they will appear over time.
@@ -181,7 +181,7 @@ To maintain quality, you may need to record weight checks during production. The
 
 **What You'll See:** The weight is added to the running weight log for that size. The system calculates a **running yield percentage** that tells you how accurate your pre-rolls are compared to the target weight.
 
-[SCREENSHOT: The weight log section showing recorded measurements and the running yield percentage]
+![The weight log section showing recorded measurements and the running yield percentage](../screenshots/edit-batch-full.png)
 
 ### Understanding Yield Percentage
 - **High yield (green)** -- Your pre-rolls are close to the target weight. Good job.
@@ -204,7 +204,7 @@ The system calculates how many pre-rolls you make per hour. This helps track pro
    - **Average rate** -- Your average rate across all sessions for this batch.
    - **Best rate** -- The highest rate you achieved during this batch.
 
-[SCREENSHOT: The production rate section showing current, average, and best rates]
+![The production rate section showing current, average, and best rates](../screenshots/edit-batch-full.png)
 
 ### How the Rate is Calculated
 

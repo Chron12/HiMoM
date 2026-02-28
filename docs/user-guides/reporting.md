@@ -15,7 +15,7 @@ The Stats page (also called Analytics) shows a visual overview of your productio
 
 **What You'll See:** A page with a large title "Analytics" and several sections of charts and numbers below it.
 
-[SCREENSHOT: The full Analytics/Stats page showing the header and overview section]
+![The full Analytics/Stats page showing the header and overview section](../screenshots/analytics-full.png)
 
 ### Understanding the Overview Section
 
@@ -26,7 +26,7 @@ At the top of the Stats page, you will see summary cards with key numbers:
 - **Average Production Rate** -- The typical number of pre-rolls made per hour, averaged across all batches.
 - **Active Batches** -- How many batches are currently being worked on right now.
 
-[SCREENSHOT: The summary cards at the top of the Stats page showing total batches, total pre-rolls, and average rate]
+![The summary cards at the top of the Stats page showing total batches, total pre-rolls, and average rate](../screenshots/analytics-summary-cards.png)
 
 ### Understanding the Charts
 
@@ -37,7 +37,7 @@ This chart shows how many pre-rolls were produced each day, week, or month. The 
 - **Higher bars or points** mean more production during that time period.
 - **Dips** mean less production -- possibly due to fewer batches, days off, or slower work.
 
-[SCREENSHOT: The production over time chart showing daily or weekly output]
+![The production over time chart showing daily or weekly output](../screenshots/analytics-full.png)
 
 #### Production by Size
 This chart breaks down production by pre-roll size (0.5g, 0.7g, 1.0g). It helps you see which sizes are made most often.
@@ -45,19 +45,19 @@ This chart breaks down production by pre-roll size (0.5g, 0.7g, 1.0g). It helps 
 - Blue typically represents 0.7g
 - Orange typically represents 1.0g
 
-[SCREENSHOT: The production by size chart or breakdown]
+![The production by size chart or breakdown](../screenshots/analytics-strain-performance.png)
 
 #### Production Rate Trends
 This chart shows how production speed (pre-rolls per hour) has changed over time. A rising trend means production is getting faster.
 
-[SCREENSHOT: The production rate trend chart]
+![The production rate trend chart](../screenshots/analytics-strain-performance.png)
 
 ### Navigating the Stats Page
 The Stats page may have buttons or tabs to switch between different views or time periods. Look for:
 - **Time period selectors** -- Let you view data for the last week, month, or all time.
 - **Size filters** -- Let you focus on just one pre-roll size.
 
-[SCREENSHOT: The time period selector or filter buttons on the Stats page]
+![The time period selector or filter buttons on the Stats page](../screenshots/analytics-summary-cards.png)
 
 ### If Something Goes Wrong
 - **The charts are empty** -- This usually means no batches have been completed yet, or the data has not been processed. If you have completed batches and still see empty charts, try refreshing the page.
@@ -109,7 +109,7 @@ The Archive stores all batches that have been completed (moved to "Done" stage) 
 
 **What You'll See:** A page listing all archived batches, with their strain name, production counts, dates, and other details.
 
-[SCREENSHOT: The Archive page showing a list of completed batches with their details]
+![The Archive page showing a list of completed batches with their details](../screenshots/archive.png)
 
 ### What You Can See in the Archive
 
@@ -128,7 +128,7 @@ The Archive page may have a search bar or filter options:
 - **Search** -- Type a strain name to find specific batches.
 - **Sort** -- Click column headers to sort by strain name, date, or count.
 
-[SCREENSHOT: The search bar or filter options on the Archive page]
+![The search bar or filter options on the Archive page](../screenshots/archive.png)
 
 ### If Something Goes Wrong
 - **A batch is missing from the Archive** -- The batch must be at the "Done" stage and then archived to appear here. If it is still on the main dashboard, it has not been archived yet.
@@ -201,7 +201,7 @@ For a detailed view of any batch:
    - METRC tracking numbers
    - Testing status and notes
 
-[SCREENSHOT: A detailed Edit Batch page showing all the information fields for reporting]
+![A detailed Edit Batch page showing all the information fields for reporting](../screenshots/edit-batch-full.png)
 
 ---
 
@@ -220,7 +220,7 @@ The Audit page shows a complete history of every change ever made in the system.
 - **Old value** -- What the field was before the change.
 - **New value** -- What the field was changed to.
 
-[SCREENSHOT: The Audit page showing a list of recent changes with timestamps, batch info, and old/new values]
+![The Audit page showing a list of recent changes with timestamps, batch info, and old/new values](../screenshots/audit.png)
 
 ### Reading Audit Entries
 

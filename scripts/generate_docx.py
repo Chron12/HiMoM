@@ -168,6 +168,42 @@ def add_screenshot_placeholder(doc: Document, description: str):
     run.font.italic = True
 
 
+def add_embedded_image(doc: Document, image_path: str, alt_text: str):
+    """Add an actual image to the document, scaled to fit within page width."""
+    from PIL import Image as PILImage
+
+    para = doc.add_paragraph()
+    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    para.paragraph_format.space_before = Pt(8)
+    para.paragraph_format.space_after = Pt(4)
+
+    # Get image dimensions to calculate appropriate width
+    try:
+        with PILImage.open(image_path) as img:
+            w, h = img.size
+            aspect = h / w
+            # Max width 5.5 inches (leaving margins), max height 7 inches
+            width = min(5.5, 7.0 / aspect) if aspect > 0 else 5.5
+            run = para.add_run()
+            run.add_picture(image_path, width=Inches(width))
+    except Exception as e:
+        # Fall back to default sizing
+        run = para.add_run()
+        try:
+            run.add_picture(image_path, width=Inches(5.5))
+        except Exception:
+            add_screenshot_placeholder(doc, f"{alt_text} (image not found)")
+            return
+
+    # Caption below image
+    caption = doc.add_paragraph()
+    caption.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cap_run = caption.add_run(alt_text)
+    cap_run.font.size = Pt(9)
+    cap_run.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
+    cap_run.font.italic = True
+
+
 def add_info_box(doc: Document, text: str, box_type: str = "info"):
     """Add a styled info/warning/tip box."""
     colors = {
@@ -289,6 +325,21 @@ def md_to_docx(md_path: str, docx_path: str, title: str, subtitle: str = ""):
 
         # Empty line
         if not line.strip():
+            i += 1
+            continue
+
+        # Markdown images: ![alt](path)
+        img_match = re.match(r'!\[(.+?)\]\((.+?)\)', line.strip())
+        if img_match:
+            alt_text = img_match.group(1)
+            img_rel_path = img_match.group(2)
+            # Resolve path relative to the markdown file
+            md_dir = Path(md_path).parent
+            img_abs_path = (md_dir / img_rel_path).resolve()
+            if img_abs_path.exists():
+                add_embedded_image(doc, str(img_abs_path), alt_text)
+            else:
+                add_screenshot_placeholder(doc, alt_text)
             i += 1
             continue
 

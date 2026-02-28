@@ -58,7 +58,7 @@ The app uses a shared password to keep things secure. Your supervisor or manager
 
 **What You'll See:** If the password is correct, you will be taken to the **Production Dashboard** -- the main page of the app. If the password is wrong, you will see a red error message that says "Invalid password" and the login box will shake.
 
-[SCREENSHOT: The login page with the password field, Remember Me checkbox, and Login button]
+![The login page with the password field, Remember Me checkbox, and Login button](../screenshots/login-page.png)
 
 ### If Something Goes Wrong
 - **"Invalid password"** -- Double-check the password. Make sure Caps Lock is not on (look for a light on your keyboard). Try typing the password in a notes app first so you can see what you are typing, then copy and paste it.
@@ -71,7 +71,7 @@ The app uses a shared password to keep things secure. Your supervisor or manager
 
 After logging in, you land on the **Production Dashboard**. This is your home base -- the page you will use most often. Let's walk through what you see on screen.
 
-[SCREENSHOT: The full Production Dashboard with batches listed, header, and navigation buttons]
+![The full Production Dashboard with batches listed, header, and navigation buttons](../screenshots/dashboard.png)
 
 ### The Header Bar
 
@@ -82,7 +82,7 @@ At the very top of the page, you will see a dark bar with the app name and navig
 
 On a phone, the navigation buttons are hidden behind a **menu button** (three horizontal lines, sometimes called a "hamburger menu") in the top-left corner. Tap it to see all the navigation options in a side panel.
 
-[SCREENSHOT: The navigation bar with all buttons visible on desktop]
+![The navigation bar with all buttons visible on desktop](../screenshots/dashboard.png)
 
 [SCREENSHOT: The hamburger menu button on a phone screen]
 
@@ -117,13 +117,13 @@ Every batch moves through a series of stages from start to finish. Each stage ha
 | 6 | **Bagging** | Deep orange | Pre-rolls are being packaged into bags, tubes, or packs |
 | 7 | **Done** | Dark green | Batch is completely finished and ready for sale |
 
-[SCREENSHOT: A few batches showing different stage badges with their colors]
+![A few batches showing different stage badges with their colors](../screenshots/dashboard.png)
 
 ### Inventory Alerts
 
 If paper or cone supplies are running low, you will see an **orange alert banner** at the top of the dashboard. This tells you which size (0.5g, 0.7g, or 1.0g) is low and how many papers are left. When you see this, let your supervisor know so supplies can be reordered.
 
-[SCREENSHOT: An inventory low-stock alert banner on the dashboard]
+![An inventory low-stock alert banner on the dashboard](../screenshots/dashboard.png)
 
 ---
 

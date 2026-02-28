@@ -14,7 +14,7 @@ Paper and cone inventory tracks how many rolling papers or cones you have for ea
 
 **What You'll See:** A page titled "Paper Inventory" showing inventory levels for each pre-roll size.
 
-[SCREENSHOT: The Paper Inventory page showing current levels for all three sizes]
+![The Paper Inventory page showing current levels for all three sizes](../screenshots/paper-inventory.png)
 
 ### Understanding the Inventory Display
 
@@ -36,7 +36,7 @@ The system knows how many papers come in each box:
 | 0.7g | 900 papers per box |
 | 1.0g | 1,000 papers per box |
 
-[SCREENSHOT: The inventory card for one size showing boxes, individual papers, total, and days remaining]
+![The inventory card for one size showing boxes, individual papers, total, and days remaining](../screenshots/paper-inventory.png)
 
 ### If Something Goes Wrong
 - **The numbers look outdated** -- Refresh the page to see the latest data. Someone else may have updated the inventory since you last checked.
@@ -59,7 +59,7 @@ When new supplies arrive or when you do a physical count, you need to update the
 
 **What You'll See:** The total papers count updates automatically. The "days remaining" estimate recalculates too.
 
-[SCREENSHOT: The inventory update fields for one size, showing the Boxes and Individual Papers input fields and the Save button]
+![The inventory update fields for one size, showing the Boxes and Individual Papers input fields and the Save button](../screenshots/paper-inventory.png)
 
 ### Example
 
@@ -81,7 +81,7 @@ Your supervisor can also update inventory from the admin inventory page, which p
 3. Optionally update the **low stock threshold** (the number of papers at which a warning appears).
 4. Click **Save**.
 
-[SCREENSHOT: The admin inventory page with threshold settings]
+![The admin inventory page with threshold settings](../screenshots/paper-inventory.png)
 
 ### If Something Goes Wrong
 - **I typed the wrong number** -- Simply type the correct number and click Save again. The system always uses the latest number you enter.
@@ -98,7 +98,7 @@ When paper or cone inventory drops below the alert threshold, the system warns y
 1. **On the Production Dashboard** -- An orange banner appears at the top of the page listing which sizes are running low.
 2. **On the Paper Inventory page** -- Low stock items are highlighted with a warning indicator.
 
-[SCREENSHOT: The orange low-stock alert banner on the Production Dashboard]
+![The orange low-stock alert banner on the Production Dashboard](../screenshots/dashboard.png)
 
 ### What to Do When You See a Low Stock Alert
 
@@ -114,7 +114,7 @@ After you have reported the low stock to your supervisor:
 2. You can also click **Dismiss All** to clear all inventory alerts at once.
 3. Dismissing an alert just hides the message. If inventory is still low, the alert will come back the next time the system checks.
 
-[SCREENSHOT: The dismiss button on an inventory alert]
+![The dismiss button on an inventory alert](../screenshots/dashboard.png)
 
 ### If Something Goes Wrong
 - **Alerts keep coming back after I dismiss them** -- This means inventory is still below the threshold. The alert will not go away permanently until inventory is restocked above the threshold level.
@@ -132,7 +132,7 @@ Finished Goods are batches that have been completed, packaged, and assigned a ME
 
 **What You'll See:** A page titled "Finished Goods" showing all completed packages with their METRC numbers, strain names, quantities, and status.
 
-[SCREENSHOT: The Finished Goods page showing a list of packages with METRC numbers and quantities]
+![The Finished Goods page showing a list of packages with METRC numbers and quantities](../screenshots/finished-goods.png)
 
 ### Understanding the Finished Goods Display
 
@@ -151,7 +151,7 @@ The Finished Goods page has a search bar:
 2. Type a METRC number or strain name.
 3. The list filters to show only matching packages.
 
-[SCREENSHOT: The search bar on the Finished Goods page with a search result]
+![The search bar on the Finished Goods page with a search result](../screenshots/finished-goods.png)
 
 ### Viewing Package Details
 
@@ -162,7 +162,7 @@ Click or tap any package to see its full details, including:
 - Current available units
 - Wholesale holds applied to this package
 
-[SCREENSHOT: The detail view of a single finished goods package]
+![The detail view of a single finished goods package](../screenshots/finished-goods.png)
 
 ### If Something Goes Wrong
 - **A package is missing** -- Check if you have the "Include Archived" filter turned on. Depleted packages may be hidden by default.
@@ -190,7 +190,7 @@ On the Finished Goods page, each METRC package shows its SKU breakdown. For exam
 
 The breakdown shows you exactly how the pre-rolls from each batch were packaged and are available for sale.
 
-[SCREENSHOT: A SKU breakdown table for a finished goods package]
+![A SKU breakdown table for a finished goods package](../screenshots/finished-goods.png)
 
 ### Packaging Breakdown on Batches
 
@@ -217,7 +217,7 @@ Wholesale holds allow you to reserve units from finished goods packages for spec
 
 **What You'll See:** A page showing all available strains with their current inventory and any existing holds.
 
-[SCREENSHOT: The Wholesale page showing available strains and inventory levels]
+![The Wholesale page showing available strains and inventory levels](../screenshots/wholesale.png)
 
 ### Creating a Wholesale Hold
 
@@ -232,7 +232,7 @@ Wholesale holds allow you to reserve units from finished goods packages for spec
 
 **What You'll See:** The hold appears in the list with a hold ID. The available quantity for that SKU decreases by the amount held.
 
-[SCREENSHOT: The create hold form showing METRC number, SKU, quantity, and notes fields]
+![The create hold form showing METRC number, SKU, quantity, and notes fields](../screenshots/wholesale.png)
 
 ### Viewing and Managing Holds
 
@@ -250,7 +250,7 @@ When a wholesale order is shipped or cancelled, you need to release the hold:
 
 **What You'll See:** The hold is removed and the available quantity goes back up.
 
-[SCREENSHOT: The release/delete button next to a wholesale hold]
+![The release/delete button next to a wholesale hold](../screenshots/wholesale.png)
 
 ### If Something Goes Wrong
 - **"Only X units available"** -- You are trying to hold more units than are currently available. Check if other holds already exist for the same SKU.

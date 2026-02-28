@@ -27,7 +27,7 @@ PreRollTracker uses a **single admin password** model. There is one password tha
 | CSRF protection | Enabled via Flask-WTF, tokens live as long as the session |
 | Max upload size | 16 MB |
 
-[SCREENSHOT: PreRollTracker login page showing the password field, Remember Me checkbox, and Forgot Password link]
+![PreRollTracker login page showing the password field, Remember Me checkbox, and Forgot Password link](../screenshots/login-page.png)
 
 ### 1.2 Changing the Admin Password
 
@@ -69,7 +69,7 @@ Use the standalone password setup script. This does not require the Flask applic
 4. Enter a new password and confirm it.
 5. Click **Save**. The new password takes effect immediately for future logins (your current session remains active).
 
-[SCREENSHOT: PreRollTracker settings page showing the Change Password section with new password and confirm password fields]
+![PreRollTracker settings page showing the Change Password section with new password and confirm password fields](../screenshots/settings-change-password.png)
 
 ### 1.3 What Happens if You Forget the Password
 
@@ -108,7 +108,7 @@ This is different from the admin password:
 
 The API key is auto-generated the first time it is requested. It is a 32-character URL-safe token.
 
-[SCREENSHOT: PreRollTracker settings page showing the API Key section with the key displayed and a Regenerate button]
+![PreRollTracker settings page showing the API Key section with the key displayed and a Regenerate button](../screenshots/settings-full.png)
 
 ### 2.3 Regenerating the API Key
 
@@ -168,7 +168,7 @@ Recovery keys are generated in two scenarios:
 6. Enter and confirm a new password.
 7. A **new recovery key** is generated and displayed. Save it immediately since the old one is now invalid.
 
-[SCREENSHOT: Forgot Password page showing the recovery key input field]
+![Forgot Password page showing the recovery key input field](../screenshots/forgot-password.png)
 
 ---
 

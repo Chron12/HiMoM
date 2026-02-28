@@ -108,7 +108,7 @@ If the system could not save your counts, it may have shown a brief error messag
 - **Update counts frequently** (every 50-100 pre-rolls) rather than entering a big number at the end of the day. This way, if one save fails, you only lose a small amount of data.
 - **Refresh the page** after entering counts to confirm they saved.
 
-[SCREENSHOT: A successful count save showing updated totals on the Edit Batch page]
+![A successful count save showing updated totals on the Edit Batch page](../screenshots/edit-batch-counts.png)
 
 ---
 
@@ -149,7 +149,7 @@ If the page still looks wrong after refreshing and clearing the cache:
 2. Go to **himomstats.online** and see if the page looks correct there.
 3. If it works in a different browser, the problem is with your original browser. You can continue using the other browser, or try clearing all data from the original browser.
 
-[SCREENSHOT: The Production Dashboard displaying correctly after a refresh]
+![The Production Dashboard displaying correctly after a refresh](../screenshots/dashboard.png)
 
 ---
 
@@ -263,9 +263,9 @@ A recovery key is a special code that looks like **HARVEST-XXXX-XXXX-XXXX** (wit
 9. You will see a **new recovery key** displayed on the screen. **WRITE THIS DOWN IMMEDIATELY.** This new key replaces the old one and will not be shown again.
 10. Click **Go to Login** and log in with your new password.
 
-[SCREENSHOT: The Forgot Password page with the recovery key input field]
+![The Forgot Password page with the recovery key input field](../screenshots/forgot-password.png)
 
-[SCREENSHOT: The password reset confirmation page showing the new recovery key]
+![The password reset confirmation page showing the new recovery key](../screenshots/settings-recovery-key.png)
 
 ### If You Do Not Have a Recovery Key
 

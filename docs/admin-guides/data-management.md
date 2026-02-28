@@ -401,7 +401,7 @@ sqlite3 /opt/preroll-tracker/preroll_tracker.db \
   "UPDATE batches SET archived = 1 WHERE id = 'BATCH_ID';"
 ```
 
-[SCREENSHOT: PreRollTracker batch card showing the Archive button on a completed batch]
+![PreRollTracker batch card showing the Archive button on a completed batch](../screenshots/archive.png)
 
 ### 7.2 Viewing Archived Batches
 
