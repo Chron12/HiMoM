@@ -14,6 +14,13 @@ kramdown:
   input: GFM
   hard_wrap: false
 
+# Default layout for all pages
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
 # Exclude from build
 exclude:
   - "*.docx"
