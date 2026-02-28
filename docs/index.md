@@ -44,7 +44,7 @@ For developers integrating with the API.
 
 - [API Reference](api-reference/api-reference) — 81 endpoints with curl examples
 - [Webhooks & Events](api-reference/webhooks-and-events) — Event bus, polling patterns
-- [Full Document Index](INDEX) — Complete catalog of all documents
+- [Full Document Index](document-index) — Complete catalog of all documents
 
 ---
 

@@ -6,7 +6,7 @@ url: "https://chron12.github.io"
 
 # Navigation structure
 header_pages:
-  - INDEX.md
+  - document-index.md
 
 # Markdown settings
 markdown: kramdown
