@@ -1,0 +1,22 @@
+title: "HiMoM Documentation"
+description: "Comprehensive documentation for PreRollTracker & ApexAPI"
+theme: jekyll-theme-cayman
+baseurl: "/HiMoM"
+url: "https://chron12.github.io"
+
+# Navigation structure
+header_pages:
+  - INDEX.md
+
+# Markdown settings
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+# Exclude from build
+exclude:
+  - "*.docx"
+  - "*.xlsx"
+  - "_generate_xlsx.py"
+  - "AUDIT_REPORT.md"

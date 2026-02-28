@@ -1,0 +1,22 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Claude Code / Swarm internals
+.claude-flow/
+.swarm/
+.mcp.json
+
+# Backup artifacts
+*.db
+*.sqlite
