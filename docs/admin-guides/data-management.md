@@ -423,7 +423,60 @@ The audit log grows indefinitely. If it becomes very large (tens of thousands of
    ```
 3. Optionally vacuum the database to reclaim space.
 
-### 7.4 Order Lifecycle in ApexAPI
+### 7.4 Finished Goods Data Lifecycle
+
+The Finished Goods system maintains its own data lifecycle separate from batches:
+
+**Finished Goods History (`finished_goods_history` table):**
+
+Every change to a finished goods package is logged in the `finished_goods_history` table. Each entry records:
+- **Timestamp** -- When the change occurred
+- **METRC number** -- Which package was affected
+- **Change type** -- What kind of change (see table below)
+- **Field name** -- The specific data field that changed
+- **Old value / New value** -- Before and after values
+- **Source** -- Whether the change came from the API or manual input
+
+| Change Type | What Triggers It |
+|-------------|-----------------|
+| `created` | A new package is added to the system |
+| `deducted` | Grams or units are removed from a package |
+| `added` | Grams or units are added to a package |
+| `ordered` | Grams are reserved for an order |
+| `packed` | Grams are marked as packed |
+| `fulfilled` | An order is completed and grams are permanently fulfilled |
+| `archived` | Package is moved to the archive |
+| `restored` | Package is restored from the archive |
+| `apex_units` | Apex inventory unit counts are updated |
+| `sku_settings` | Apex SKU settings are changed |
+| `physical_override` | Physical inventory override is set or cleared |
+
+**Exporting Finished Goods History:**
+
+```
+sqlite3 -header -csv /opt/preroll-tracker/preroll_tracker.db \
+  "SELECT * FROM finished_goods_history ORDER BY timestamp DESC LIMIT 500;" \
+  > fg_history_export.csv
+```
+
+Or use the API: `GET /api/finished-goods/history?limit=500`
+
+**Archiving vs Deleting Finished Goods:**
+
+- **Archiving** (soft delete) sets `archived = 1`. The package is hidden from the active view but preserved. It can be restored at any time. Wholesale holds are NOT affected.
+- **Orphaning** sets `orphaned = 1`. Used when a package has weight in METRC but no physical product. Similar to archiving but communicates a different status.
+- **Permanent deletion** removes the package from the database entirely. **Warning:** This triggers `ON DELETE CASCADE` on the `wholesale_holds` table, permanently deleting all associated holds. This action is irreversible.
+
+Before permanently deleting a package, always:
+1. Export its history first (`GET /api/finished-goods/{metrc_number}/history`)
+2. Verify no critical holds exist
+3. Confirm with your team that the deletion is intentional
+
+**CSV Export Endpoint:**
+
+The API provides a summary export: `GET /api/finished-goods/` returns all packages with their grams, orders, SKU breakdowns, and status. Use `?include_archived=true` to include archived packages.
+
+### 7.5 Order Lifecycle in ApexAPI
 
 ApexAPI filters orders by status. Orders with statuses in the `excluded_statuses` list (default: "Complete", "Cancelled", "Delivered") are hidden from the active view but remain in the database cache.
 

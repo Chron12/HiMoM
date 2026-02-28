@@ -1152,13 +1152,1202 @@ curl -X PUT -H "X-API-Key: YOUR_KEY" \
 
 ### DELETE /api/finished-goods/{metrc_number}
 
-Delete a finished goods package. *(Note: This endpoint may archive rather than permanently delete depending on implementation.)*
+Delete (archive) a finished goods package. By default, the package is soft-deleted (archived). Use query parameters to control deletion behavior.
 
 - **Auth Required:** API key or session
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `restore` | boolean | `false` | Set to `true` to restore a previously archived package |
+| `orphan` | boolean | `false` | Set to `true` to mark as orphaned (no source batch) instead of deleting |
+| `permanent` | boolean | `false` | Set to `true` to permanently delete instead of archiving |
+
+**Example Request (default -- archive):**
 
 ```bash
 curl -X DELETE -H "X-API-Key: YOUR_KEY" \
   "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149"
+```
+
+**Example Request (restore):**
+
+```bash
+curl -X DELETE -H "X-API-Key: YOUR_KEY" \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149?restore=true"
+```
+
+**Example Request (permanent delete):**
+
+```bash
+curl -X DELETE -H "X-API-Key: YOUR_KEY" \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149?permanent=true"
+```
+
+**Example Request (mark as orphan):**
+
+```bash
+curl -X DELETE -H "X-API-Key: YOUR_KEY" \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149?orphan=true"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "message": "Package archived successfully"
+}
+```
+
+**Error Response (404):**
+
+```json
+{
+  "error": "Package not found"
+}
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/deduct
+
+Deduct inventory from a finished goods package. Supports deduction by raw grams or by pre-roll unit counts.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `grams` | float | No | Grams to deduct (use this OR units-based fields) |
+| `units` | integer | No | Number of units to deduct |
+| `unit_size` | string | No | Unit size: `"0.5g"`, `"1.0g"`, `"6pack"`, `"12pack"`, `"0.7g"`, `"0.8g"` |
+| `reason` | string | No | Audit reason for the deduction |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"grams": 50.0, "reason": "wholesale order fulfillment"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/deduct"
+```
+
+**Example Request (unit-based):**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"units": 10, "unit_size": "0.5g", "reason": "retail order"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/deduct"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "previous_grams": 350.2,
+  "current_grams": 300.2,
+  "deducted_grams": 50.0
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "Insufficient grams available"}          // 400
+{"error": "Invalid unit_size"}                     // 400
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/add
+
+Add inventory grams to a finished goods package. Supports the same body format as the deduct endpoint.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `grams` | float | No | Grams to add (use this OR units-based fields) |
+| `units` | integer | No | Number of units to add |
+| `unit_size` | string | No | Unit size: `"0.5g"`, `"1.0g"`, `"6pack"`, `"12pack"`, `"0.7g"`, `"0.8g"` |
+| `reason` | string | No | Audit reason for the addition |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"grams": 100.0, "reason": "weight correction"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/add"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "previous_grams": 300.2,
+  "current_grams": 400.2,
+  "added_grams": 100.0
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "Invalid unit_size"}                     // 400
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/physical-override
+
+Set a physical inventory override for a package. This records a real-world physical count that overrides the calculated gram amount for inventory purposes.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `physical_grams` | float or null | Yes | Physical gram count (set to `null` to clear the override) |
+| `reason` | string | No | Audit reason for the override |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"physical_grams": 340.0, "reason": "physical inventory count"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/physical-override"
+```
+
+**Example Request (clear override):**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"physical_grams": null, "reason": "override no longer needed"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/physical-override"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "physical_grams_override": 340.0,
+  "effective_grams": 340.0,
+  "current_grams": 350.2,
+  "has_physical_override": true
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "physical_grams is required"}            // 400
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/order
+
+Reserve grams for an order without deducting from inventory. This tracks ordered amounts separately from the available balance.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `grams` | float | Yes | Grams to reserve for the order |
+| `reason` | string | No | Audit reason for the reservation |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"grams": 100.0, "reason": "wholesale order #789"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/order"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "grams_ordered": 100.0,
+  "current_grams": 350.2
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "grams is required"}                     // 400
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/set-ordered
+
+Set the total ordered grams for a package (replaces the current ordered amount rather than adding to it).
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `grams` | float | Yes | Total grams ordered |
+| `reason` | string | No | Audit reason for the update |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"grams": 200.0, "reason": "corrected order total"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/set-ordered"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "grams_ordered": 200.0
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "grams is required"}                     // 400
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/set-packed
+
+Set the total packed grams for a package (replaces the current packed amount rather than adding to it).
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `grams` | float | Yes | Total grams packed |
+| `reason` | string | No | Audit reason for the update |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"grams": 150.0, "reason": "packing complete for order #789"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/set-packed"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "grams_packed": 150.0
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "grams is required"}                     // 400
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/sync
+
+Atomically sync ordered and/or packed grams for a package. At least one of `ordered_grams` or `packed_grams` must be provided.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `ordered_grams` | float | No* | Set total ordered grams |
+| `packed_grams` | float | No* | Set total packed grams |
+| `reason` | string | No | Audit reason for the sync |
+
+*At least one of `ordered_grams` or `packed_grams` is required.
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"ordered_grams": 200.0, "packed_grams": 150.0, "reason": "sync from order system"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/sync"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "grams_ordered": 200.0,
+  "grams_packed": 150.0
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                                     // 404
+{"error": "At least one of ordered_grams or packed_grams required"} // 400
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/complete-order
+
+Complete an order for a package. This finalizes order tracking and updates fulfillment state. The response includes previous and current values for audit purposes.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `grams` | float | Yes | Grams being fulfilled/completed |
+| `order_id` | string | No | External order identifier for tracking |
+| `reason` | string | No | Audit reason for the completion |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"grams": 100.0, "order_id": "WO-2026-789", "reason": "wholesale order fulfilled"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/complete-order"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "previous_grams_ordered": 200.0,
+  "current_grams_ordered": 100.0,
+  "previous_grams_fulfilled": 0.0,
+  "current_grams_fulfilled": 100.0,
+  "current_grams": 350.2
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "grams is required"}                     // 400
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/pack
+
+Pack an order by deducting grams from inventory. Unlike `deduct`, this endpoint is specifically for packing operations and updates both inventory and packed tracking.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `grams` | float | Yes | Grams to pack (deducted from inventory) |
+| `reason` | string | No | Audit reason for the packing |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"grams": 50.0, "reason": "packing wholesale order #789"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/pack"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "previous_grams": 350.2,
+  "current_grams": 300.2,
+  "grams_packed": 50.0
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "grams is required"}                     // 400
+{"error": "Insufficient grams available"}          // 400
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/set-skus
+
+Set SKU breakdown for a package. Defines the product configuration for how this package's inventory maps to specific retail units.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `skus` | array | Yes | Array of SKU definition objects |
+| `skus[].product_name` | string | Yes | Product display name |
+| `skus[].unit_size` | string | Yes | Unit size (e.g., `"0.5g"`, `"1.0g"`) |
+| `skus[].pack_size` | integer | Yes | Number of units per pack |
+| `skus[].packs_ordered` | integer | Yes | Number of packs ordered |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"skus": [{"product_name": "Blue Dream 0.5g Singles", "unit_size": "0.5g", "pack_size": 1, "packs_ordered": 200}, {"product_name": "Blue Dream 6-Pack", "unit_size": "0.5g", "pack_size": 6, "packs_ordered": 50}]}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/set-skus"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "skus": [
+    {
+      "product_name": "Blue Dream 0.5g Singles",
+      "unit_size": "0.5g",
+      "pack_size": 1,
+      "packs_ordered": 200
+    },
+    {
+      "product_name": "Blue Dream 6-Pack",
+      "unit_size": "0.5g",
+      "pack_size": 6,
+      "packs_ordered": 50
+    }
+  ]
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "skus is required"}                      // 400
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/apex-auto
+
+Enable or disable automatic Apex inventory calculation for a package.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `enabled` | boolean | Yes | `true` to enable auto-calculation, `false` to disable |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"enabled": true}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/apex-auto"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "apex_auto_inventory": true
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "enabled is required"}                   // 400
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/apex-units
+
+Manually set Apex unit counts per SKU type for a package. Used when auto-calculation is disabled or for manual overrides.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `singles_0_5g` | integer | No | Count of 0.5g singles |
+| `singles_1g` | integer | No | Count of 1.0g singles |
+| `magnetic_box_6pk` | integer | No | Count of 6-pack magnetic boxes |
+| `magnetic_box_12pk` | integer | No | Count of 12-pack magnetic boxes |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"singles_0_5g": 500, "singles_1g": 200, "magnetic_box_6pk": 30, "magnetic_box_12pk": 10}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/apex-units"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "singles_0_5g": 500,
+  "singles_1g": 200,
+  "magnetic_box_6pk": 30,
+  "magnetic_box_12pk": 10
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/apex-settings
+
+Configure per-SKU Apex settings for a package, including exclusion flags and manual unit overrides.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `settings` | object | Yes | Per-SKU settings keyed by SKU name |
+| `settings.{sku_name}.excluded` | boolean | No | Exclude this SKU from auto-calculation |
+| `settings.{sku_name}.manual_units` | integer or null | No | Manual unit override (`null` to use auto-calculated) |
+| `auto_calculate` | boolean | No | Trigger auto-calculation after saving settings |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"settings": {"0.5g Singles": {"excluded": false, "manual_units": null}, "1.0g Singles": {"excluded": true, "manual_units": 100}}, "auto_calculate": true}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/apex-settings"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "settings": {
+    "0.5g Singles": {"excluded": false, "manual_units": null},
+    "1.0g Singles": {"excluded": true, "manual_units": 100}
+  }
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "settings is required"}                  // 400
+```
+
+---
+
+### GET /api/finished-goods/{metrc_number}/apex-calculate
+
+Calculate Apex unit counts for a package based on current grams and SKU configuration. Returns the computed breakdown including excluded SKUs and gram allocations.
+
+- **Auth Required:** API key or session
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Example Request:**
+
+```bash
+curl -H "X-API-Key: YOUR_KEY" \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/apex-calculate"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "available_grams": 350.2,
+  "calculated_units": {
+    "0.5g Singles": {"units": 600, "grams_used": 300.0, "excluded": false},
+    "1.0g Singles": {"units": 50, "grams_used": 50.0, "excluded": false},
+    "6-Pack Magnetic Box": {"units": 0, "grams_used": 0.0, "excluded": true}
+  },
+  "total_grams_allocated": 350.0,
+  "remaining_grams": 0.2
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/apex-decrement
+
+Idempotent decrement of Apex inventory units for a specific SKU. Use the `idempotency_key` to prevent duplicate decrements from retried requests.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `sku` | string | Yes | SKU name to decrement (e.g., `"0.5g Singles"`) |
+| `units` | integer | Yes | Number of units to decrement |
+| `reason` | string | No | Audit reason for the decrement |
+| `idempotency_key` | string | No | Unique key to prevent duplicate processing |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"sku": "0.5g Singles", "units": 10, "reason": "sold at retail", "idempotency_key": "sale-2026-02-28-001"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/apex-decrement"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "sku": "0.5g Singles",
+  "units_decremented": 10,
+  "previous_units": 600,
+  "current_units": 590,
+  "idempotency_key": "sale-2026-02-28-001"
+}
+```
+
+**Success Response (duplicate/idempotent):**
+
+```json
+{
+  "success": true,
+  "duplicate": true,
+  "message": "Already processed",
+  "idempotency_key": "sale-2026-02-28-001"
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "sku and units are required"}            // 400
+{"error": "Insufficient units available"}          // 400
+```
+
+---
+
+### GET /api/finished-goods/{metrc_number}/custom-skus
+
+Get custom SKU definitions for a package. Returns both custom SKU overrides and the effective (merged) SKU list.
+
+- **Auth Required:** API key or session
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Example Request:**
+
+```bash
+curl -H "X-API-Key: YOUR_KEY" \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/custom-skus"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "custom_skus": {
+    "0.8g Premium": {"unit_size": "0.8g", "pack_size": 1, "display_name": "0.8g Premium Singles"}
+  },
+  "effective_skus": {
+    "0.5g Singles": {"unit_size": "0.5g", "pack_size": 1, "source": "default"},
+    "1.0g Singles": {"unit_size": "1.0g", "pack_size": 1, "source": "default"},
+    "0.8g Premium": {"unit_size": "0.8g", "pack_size": 1, "source": "custom"}
+  }
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+```
+
+---
+
+### POST /api/finished-goods/{metrc_number}/custom-skus
+
+Replace all custom SKU definitions for a package. Pass `null` to remove all custom SKUs.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `custom_skus` | object or null | Yes | Dictionary of custom SKU definitions keyed by SKU name, or `null` to clear all |
+
+**Example Request:**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"custom_skus": {"0.8g Premium": {"unit_size": "0.8g", "pack_size": 1}, "3-Pack Sampler": {"unit_size": "0.5g", "pack_size": 3}}}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/custom-skus"
+```
+
+**Example Request (clear all custom SKUs):**
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"custom_skus": null}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/custom-skus"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "custom_skus": {
+    "0.8g Premium": {"unit_size": "0.8g", "pack_size": 1},
+    "3-Pack Sampler": {"unit_size": "0.5g", "pack_size": 3}
+  }
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "custom_skus field is required"}         // 400
+```
+
+---
+
+### PUT /api/finished-goods/{metrc_number}/custom-skus
+
+Add or update a single custom SKU definition for a package.
+
+- **Auth Required:** API key or session
+- **Content-Type:** `application/json`
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `sku_key` | string | Yes | Unique key for the custom SKU |
+| `sku_def` | object | Yes | SKU definition object |
+| `current_settings` | object | No | Current settings to merge with (for optimistic concurrency) |
+
+**Example Request:**
+
+```bash
+curl -X PUT -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"sku_key": "0.8g Premium", "sku_def": {"unit_size": "0.8g", "pack_size": 1, "display_name": "0.8g Premium Singles"}}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/custom-skus"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "sku_key": "0.8g Premium",
+  "sku_def": {"unit_size": "0.8g", "pack_size": 1, "display_name": "0.8g Premium Singles"}
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "sku_key and sku_def are required"}      // 400
+```
+
+---
+
+### DELETE /api/finished-goods/{metrc_number}/custom-skus/{sku_key}
+
+Delete a single custom SKU definition from a package.
+
+- **Auth Required:** API key or session
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+| `sku_key` | string | Yes | Key of the custom SKU to delete |
+
+**Example Request:**
+
+```bash
+curl -X DELETE -H "X-API-Key: YOUR_KEY" \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/custom-skus/0.8g%20Premium"
+```
+
+**Success Response:**
+
+```json
+{
+  "success": true,
+  "metrc_number": "1A406030000B1E2000014149",
+  "deleted_sku": "0.8g Premium"
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+{"error": "Custom SKU not found"}                  // 404
+```
+
+---
+
+### GET /api/finished-goods/{metrc_number}/history
+
+Get the change history for a specific package. Returns a chronological list of all inventory changes, order events, and configuration updates.
+
+- **Auth Required:** API key or session
+- **URL Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `metrc_number` | string | Yes | METRC package number |
+
+**Example Request:**
+
+```bash
+curl -H "X-API-Key: YOUR_KEY" \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/history"
+```
+
+**Success Response:**
+
+```json
+{
+  "metrc_number": "1A406030000B1E2000014149",
+  "strain": "Blue Dream",
+  "history": [
+    {
+      "timestamp": "2026-02-28T14:00:00Z",
+      "change_type": "deduct",
+      "grams_changed": -50.0,
+      "current_grams": 300.2,
+      "reason": "wholesale order fulfillment"
+    },
+    {
+      "timestamp": "2026-02-27T10:00:00Z",
+      "change_type": "create",
+      "grams_changed": 500.0,
+      "current_grams": 500.0,
+      "reason": "initial package creation"
+    }
+  ],
+  "total_changes": 2
+}
+```
+
+**Error Responses:**
+
+```json
+{"error": "Package not found"}                    // 404
+```
+
+---
+
+### Finished Goods API Workflow Examples
+
+#### Workflow 1: Creating a Package After Batch Completion
+
+After a production batch is completed and tested, create a finished goods package and configure Apex inventory tracking.
+
+**Step 1:** Create the finished goods package.
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"metrc_number": "1A406030000B1E2000099999", "strain": "OG Kush", "grams": 750}' \
+  "https://himomstats.online/api/finished-goods/"
+```
+
+**Step 2:** Enable Apex auto-calculation.
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"enabled": true}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000099999/apex-auto"
+```
+
+**Step 3:** Configure per-SKU settings (exclude SKUs, set manual overrides).
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"settings": {"0.5g Singles": {"excluded": false, "manual_units": null}, "6-Pack Magnetic Box": {"excluded": true, "manual_units": null}}, "auto_calculate": true}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000099999/apex-settings"
+```
+
+**Step 4:** Verify the calculated unit counts.
+
+```bash
+curl -H "X-API-Key: YOUR_KEY" \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000099999/apex-calculate"
+```
+
+---
+
+#### Workflow 2: Processing a Wholesale Order
+
+Process a wholesale order from hold creation through packing and fulfillment.
+
+**Step 1:** Create an inventory hold to reserve units.
+
+```bash
+curl -X POST -b session_cookie \
+  -H "Content-Type: application/json" \
+  -d '{"metrc_number": "1A406030000B1E2000014149", "sku_name": "0.5g Singles", "quantity": 100, "notes": "Wholesale order #456"}' \
+  "https://himomstats.online/api/wholesale/hold"
+```
+
+**Step 2:** Pack the order (deducts grams from inventory).
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"grams": 50.0, "reason": "packing wholesale order #456"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/pack"
+```
+
+**Step 3:** Complete the order and update fulfillment tracking.
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"grams": 50.0, "order_id": "WO-456", "reason": "wholesale order #456 fulfilled"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/complete-order"
+```
+
+**Step 4:** Release the inventory hold.
+
+```bash
+curl -X DELETE -b session_cookie \
+  "https://himomstats.online/api/wholesale/hold/hold-abc123"
+```
+
+---
+
+#### Workflow 3: Physical Inventory Reconciliation
+
+Reconcile physical inventory counts with the system when discrepancies are found.
+
+**Step 1:** Check the current system gram count.
+
+```bash
+curl -H "X-API-Key: YOUR_KEY" \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149"
+```
+
+**Step 2:** Set the physical inventory override to match the real-world count.
+
+```bash
+curl -X POST -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"physical_grams": 340.0, "reason": "quarterly physical inventory count"}' \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/physical-override"
+```
+
+**Step 3:** Verify the recalculated Apex unit counts based on the override.
+
+```bash
+curl -H "X-API-Key: YOUR_KEY" \
+  "https://himomstats.online/api/finished-goods/1A406030000B1E2000014149/apex-calculate"
 ```
 
 ---

@@ -127,7 +127,7 @@ Before setting up the integration:
 9. **Restart ApexAPI** (close and reopen the application).
 10. Check the connection status indicator in ApexAPI. It should show a green "Connected" status.
 
-![PreRollTracker Settings page with the API key visible and a copy button highlighted](../screenshots/settings-full.png)
+![PreRollTracker Settings page with the API key visible and a copy button highlighted](../screenshots/settings-api-key.png)
 
 [SCREENSHOT: ApexAPI main window showing green connection status for the Dashboard]
 
@@ -216,6 +216,80 @@ The batch mapping cache refreshes every 5 minutes (300 seconds). This means:
 
 - If a new batch is created in Apex Trading, it may take up to 5 minutes to appear in the mapping.
 - If a batch is deleted, it may take up to 5 minutes for sync to stop trying to update it.
+
+### 4.6 Finished Goods Apex Integration Deep Dive
+
+The Finished Goods system in PreRollTracker drives the Apex inventory numbers that stores see. Understanding how unit counts are calculated is critical for troubleshooting.
+
+#### How `/apex-calculate` Works
+
+When ApexAPI (or the Finished Goods page) requests calculated units for a package, PreRollTracker's `calculate_apex_units()` method runs:
+
+1. **Determine effective grams:** If a physical inventory override is set, use that. Otherwise, use the METRC `current_grams`.
+2. **Subtract all commitments:** Deduct `grams_ordered` (reserved), `grams_packed` (fulfilled), and wholesale holds from effective grams to get the truly available amount.
+3. **For each SKU type:** Divide available grams by grams-per-unit to get unit count.
+4. **Apply SKU settings:** Check per-package settings:
+   - If `excluded = true` for a SKU, set its count to 0 (it won't appear in Apex).
+   - If `manual_units` is set (not null), use that number instead of the calculated count.
+5. **Include custom SKUs:** If the package has custom SKU definitions (CannaDart, Cocoa Blunt, etc.), calculate units for those too using their custom grams-per-unit.
+6. **Return** the final unit counts per SKU.
+
+#### Per-Package Apex SKU Settings
+
+Each package can have individual SKU settings stored in `apex_sku_settings` JSON:
+
+```json
+{
+  "singles_0_5g": {"excluded": false, "manual_units": null},
+  "singles_1g": {"excluded": true, "manual_units": null},
+  "magnetic_box_6pk": {"excluded": false, "manual_units": 50},
+  "magnetic_box_12pk": {"excluded": false, "manual_units": null}
+}
+```
+
+- `excluded: true` — SKU does not appear in Apex Trading for this package.
+- `manual_units: 50` — Overrides the calculated count with exactly 50 units. Useful when auto-calculation doesn't match reality (damaged product, special allocations).
+
+To configure via API: `POST /api/finished-goods/{metrc_number}/apex-settings`
+
+#### Idempotent Decrement for Apex Sales
+
+When a store sells a unit through Apex, the system sends a decrement to PreRollTracker:
+
+```
+POST /api/finished-goods/{metrc_number}/apex-decrement
+{
+  "sku": "singles_0_5g",
+  "units": 1,
+  "idempotency_key": "apex-sale-12345"
+}
+```
+
+The `idempotency_key` prevents double-counting. If the same key is sent twice (network retry, duplicate webhook), the second request is ignored. Processed keys are stored in the package's `processed_decrements` JSON field.
+
+#### Custom SKUs
+
+Custom SKUs extend the default four SKU types. They are defined per-package:
+
+```json
+{
+  "cannadart_0_8g": {"name": "CannaDart", "grams_per_unit": 0.8, "pack_size": 1},
+  "cocoa_blunt_1g": {"name": "Cocoa Blunt", "grams_per_unit": 1.0, "pack_size": 1}
+}
+```
+
+Managed via: `POST/PUT/DELETE /api/finished-goods/{metrc_number}/custom-skus`
+
+#### Troubleshooting Apex Sync for Finished Goods
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Package shows 0 units in Apex despite having grams | All SKUs are excluded in settings | Check Apex SKU settings, unexclude at least one SKU |
+| Apex shows stale numbers | 5-minute cache TTL | Wait for refresh, or restart ApexAPI to force |
+| Units suddenly dropped to 0 | Package was archived or orphaned | Check package status on Finished Goods page |
+| Decrement applied twice | Missing idempotency key | Always send unique idempotency keys with decrements |
+| Wrong unit counts after physical count | Override not set | Set physical inventory override to the actual grams |
+| Custom SKU not showing in Apex | SKU not mapped in ApexAPI | Verify custom SKU is added on the package AND has a matching Apex batch |
 
 ---
 

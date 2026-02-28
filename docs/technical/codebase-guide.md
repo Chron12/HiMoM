@@ -350,11 +350,74 @@ repositories/*
 - `add_batch()` / `update_batch()` / `delete_batch()` -- CRUD
 - `archive_batch()` / `unarchive_batch()` -- Archival
 
-**FinishedGoodsManager** (`tracker_core.py`) -- Manages METRC packages. Key methods:
+**FinishedGoodsManager** (`tracker_core.py`, ~2,000 lines) -- Manages METRC packages, inventory operations, Apex integration, and wholesale holds. This is one of the largest managers in the codebase.
 
-- `get_all()` / `get_by_metrc()` -- Retrieve packages
-- `add()` / `update()` / `delete()` -- CRUD
-- `deduct_grams()` / `add_grams()` -- Adjust quantities
+*Package CRUD:*
+- `add_package(metrc_number, strain, grams, ...)` -- Create new METRC package
+- `get_package(metrc_number)` / `get_all_packages(include_archived)` / `get_active_packages()` -- Retrieve packages
+- `update_package(metrc_number, field, value, reason)` -- Update editable fields (strain, notes, source_batch_id)
+- `delete_package(metrc_number)` -- Permanent deletion (cascades to wholesale_holds)
+- `search_packages(query)` -- Search by METRC number or strain name
+
+*Inventory Operations:*
+- `deduct_inventory(metrc_number, grams, units, unit_size, reason)` -- Remove inventory by grams or by unit count (calculates grams from unit_size)
+- `add_inventory(metrc_number, grams, units, unit_size, reason)` -- Add inventory
+- `set_physical_override(metrc_number, physical_grams, reason)` -- Override calculated grams with physical count (set to None to clear)
+
+*Order Lifecycle:*
+- `place_order(metrc_number, grams)` -- Reserve grams for an order (doesn't reduce current_grams)
+- `set_ordered(metrc_number, grams)` / `set_packed(metrc_number, grams)` -- Set total ordered/packed amounts directly
+- `sync_package(metrc_number, ordered_grams, packed_grams)` -- Atomically sync both ordered and packed
+- `pack_order(metrc_number, grams)` -- Pack order (reduces current_grams)
+- `complete_order(metrc_number, grams, order_id)` -- Fulfill order permanently (deducts from current_grams, adds to grams_fulfilled)
+
+*Apex Integration:*
+- `set_apex_auto_inventory(metrc_number, enabled)` -- Enable/disable auto-sync to Apex Trading
+- `set_apex_units(metrc_number, singles_0_5g, singles_1g, ...)` -- Set unit counts directly
+- `calculate_apex_units(metrc_number, held_quantities)` -- Calculate available units from grams, subtracting wholesale holds, applying SKU settings
+- `set_apex_sku_settings(metrc_number, sku_settings, auto_calculate)` -- Configure per-SKU exclusions and manual overrides
+- `decrement_apex_manual_units(metrc_number, sku, units, idempotency_key)` -- Idempotent decrement when Apex reports sales. Uses `processed_decrements` JSON field for deduplication.
+
+*Custom SKUs:*
+- `get_custom_skus(metrc_number)` / `set_custom_skus(metrc_number, custom_skus)` -- Get/replace all custom SKU definitions
+- `add_custom_sku(metrc_number, sku_key, sku_def)` / `remove_custom_sku(metrc_number, sku_key)` -- Add/remove individual custom SKUs
+
+*Archive Management:*
+- `archive_package(metrc_number)` / `restore_package(metrc_number)` / `orphan_package(metrc_number)` -- Status transitions
+
+*History & Reporting:*
+- `get_package_history(metrc_number)` / `get_all_history(limit)` -- Retrieve change history
+- `get_summary()` -- Dashboard summary statistics (total packages, active count, grams available, etc.)
+- `check_low_stock_alerts()` / `send_stock_alerts()` -- Pushover alerting for low-stock packages
+
+**WholesaleHoldsManager** (`tracker_core.py`) -- Manages inventory reservations for wholesale orders:
+
+- `create_hold(metrc_number, sku_name, quantity, notes)` -- Reserve units from a METRC package
+- `get_all_holds()` / `get_holds_for_package(metrc_number)` -- Retrieve holds
+- `get_held_quantities()` -- Returns dict of {metrc_number: {sku_name: total_held}} used by `calculate_apex_units()`
+- `remove_hold(hold_id)` -- Release a hold
+- `get_wholesale_inventory()` -- Build wholesale-friendly view grouped by strain
+
+**Key Algorithm: `calculate_apex_units()`**
+
+This is the critical algorithm that determines what stores see in Apex Trading:
+
+1. Get effective grams (physical_override or current_grams)
+2. Subtract grams_ordered + grams_packed + grams_fulfilled
+3. Get held quantities from wholesale_holds for this package
+4. For each SKU type (default + custom):
+   - If excluded in settings: set to 0
+   - If manual_units set: use that value, subtract any held quantity
+   - Otherwise: divide available grams by grams_per_unit, subtract held quantity
+5. Return unit counts per SKU
+
+**Frontend: `finished_goods.html`**
+
+The Finished Goods page is a self-contained HTML file (not a Jinja2 template). It uses vanilla JavaScript to:
+- Poll `/api/finished-goods/last-updated` every few seconds for change detection
+- Render package cards with summary stats, grams bars, order tracking, and APEX inventory
+- Handle all CRUD modals (add, edit, deduct, add, physical override, Apex settings, custom SKUs)
+- Manage search/filter state client-side
 
 **SettingsManager** (`tracker_core.py`) -- Key-value settings with typed accessors. Key methods:
 

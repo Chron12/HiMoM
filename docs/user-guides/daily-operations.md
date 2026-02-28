@@ -44,7 +44,7 @@ Every batch of pre-rolls moves through stages in order. Knowing what each stage 
 
 The system moves through these stages in order. Some transitions happen automatically (for example, when you finish grinding all the grams, the stage may advance from "Not ground" to "Ground" on its own). Other transitions need to be done by hand.
 
-![A batch card showing the stage badge and the stage name](../screenshots/dashboard.png)
+![A batch card showing the stage badge and the stage name](../screenshots/dashboard-batch-card.png)
 
 ---
 

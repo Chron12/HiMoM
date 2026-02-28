@@ -103,7 +103,7 @@ These are stored in the database and configured through the Settings page:
 | Critical grams | Integer | 50 | Gram level that triggers a critical notification |
 | Cooldown hours | Integer | 24 | Minimum hours between repeated notifications for the same package |
 
-![PreRollTracker Settings page showing the Pushover notification configuration section](../screenshots/settings-full.png)
+![PreRollTracker Settings page showing the Pushover notification configuration section](../screenshots/settings-pushover.png)
 
 ---
 

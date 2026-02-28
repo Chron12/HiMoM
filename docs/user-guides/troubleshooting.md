@@ -214,6 +214,59 @@ You tried to create a wholesale hold for more units than are available.
 
 ---
 
+## "Finished Goods Problems"
+
+If you are having trouble with the Finished Goods page, packages, or wholesale holds, try these fixes.
+
+### "A METRC package is missing from the list"
+
+1. **Check your status filter** -- Click the **Status** dropdown at the top of the Finished Goods page and make sure it is set to **All Status**, not just "Active."
+2. **Turn on archived/orphaned view** -- Check the **Show Archived / Orphaned** checkbox. The package may have been archived.
+3. **Search by METRC number** -- Type the METRC number (or last few digits) into the search bar.
+4. **Ask your supervisor** -- If you still cannot find the package, it may have been permanently deleted or it may belong to a different batch.
+
+### "The grams available don't match what I expect"
+
+The available grams on a package are the original total minus all orders, packs, and wholesale holds.
+
+1. **Check the order tracking section** on the package card. Look at:
+   - **Reserved (Orders)** -- Grams set aside for confirmed orders
+   - **Fulfilled (Packed)** -- Grams already packed and shipped
+   - **Wholesale Holding** -- Grams reserved by wholesale holds
+2. **Add them up.** Available = Total - Reserved - Fulfilled - Wholesale Holds. If the math checks out, the system is correct.
+3. **Check for a physical override** -- Your supervisor may have set a physical inventory override that changes the effective grams. If the package card has an orange border, a physical override is active.
+4. **If numbers are still wrong**, tell your supervisor. They can check the package history to see every change that affected the grams.
+
+### "I can't create a wholesale hold -- 'Only X units available'"
+
+1. **Check existing holds** -- Other holds may already exist for the same SKU and package. The available count already subtracts existing holds.
+2. **Check if the package is depleted** -- If all grams have been ordered, there are no units left to hold.
+3. **Try a smaller quantity** -- Reduce the hold quantity to what is actually available.
+4. **Check a different METRC package** -- The same strain may have multiple packages. Try holding from a different package that has more availability.
+
+### "The APEX inventory numbers seem wrong"
+
+APEX inventory is calculated automatically from available grams. If the numbers look off:
+
+1. **Wait a moment** -- APEX numbers refresh periodically (approximately every 5 minutes). Recent changes may not be reflected yet.
+2. **Check the grams available** -- The APEX unit count is calculated from the "after orders" grams. If grams were recently deducted or ordered, the units will decrease.
+3. **Check if a SKU is excluded** -- Your supervisor can exclude specific SKU types from the APEX calculation. If a SKU shows 0 units but the package has available grams, it may be excluded.
+4. **Tell your supervisor** -- They can check the Apex SKU settings for the package and adjust if needed.
+
+### "I can't archive a finished goods package"
+
+1. **Release all wholesale holds first** -- Active wholesale holds prevent a package from being archived. Go to the Wholesale page and release any holds on that package.
+2. **Check if orders are pending** -- Outstanding orders may also need to be completed or cancelled before archiving.
+3. **Ask your supervisor** -- They have additional tools to force-archive or manage holds.
+
+### "The SKU breakdown shows 0 for everything"
+
+1. **Check the APEX Inventory section** -- If it shows all zeros, the Apex SKU settings may not be configured for this package. Tell your supervisor.
+2. **Check available grams** -- If available grams are 0, all SKU counts will be 0. The package may be depleted.
+3. **Check if APEX is enabled** -- Look at the Apex button on the card. If it says "Apex OFF," auto-calculation is disabled.
+
+---
+
 ## "The App Is Slow"
 
 If pages take a long time to load or actions feel sluggish, try these steps.

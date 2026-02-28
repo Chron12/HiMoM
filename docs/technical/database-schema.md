@@ -171,6 +171,34 @@ Tracks METRC packages in finished goods inventory. Each package has a unique MET
 | idx_finished_goods_strain | strain | Filter by strain |
 | idx_finished_goods_source | source_batch_id | Find packages from a batch |
 
+#### Data Flow Notes
+
+**Grams Lifecycle:**
+- `initial_grams` — Set once at creation, never changes. Represents the original METRC package weight.
+- `current_grams` — The live remaining balance. Decreases when orders are completed (via `complete_order`), grams are deducted, or orders are packed. Increases when grams are added.
+- `physical_grams_override` — When set (not NULL), replaces `current_grams` as the "effective grams" for all calculations. Use for physical inventory discrepancies.
+
+**Order Tracking Grams:**
+- `grams_ordered` — Total grams currently reserved by orders (increases via `place_order`/`set_ordered`, decreases when packed or cancelled).
+- `grams_packed` — Total grams physically packed for shipment (increases via `pack`/`set_packed`).
+- `grams_fulfilled` — Total grams permanently shipped/delivered (increases via `complete_order`). Once fulfilled, grams cannot be recovered.
+
+**Available grams formula:**
+```
+effective_grams = physical_grams_override ?? current_grams
+available = effective_grams - grams_ordered - grams_packed - wholesale_holds_total
+```
+
+**JSON Column Formats:**
+
+| Column | Format | Example |
+|--------|--------|---------|
+| `sku_breakdown` | `[{product_name, unit_size, pack_size, packs_ordered}]` | `[{"product_name":"CannaDart","unit_size":"0.5g","pack_size":1,"packs_ordered":200}]` |
+| `apex_units` | `{sku_name: count}` | `{"singles_0_5g":821,"magnetic_box_6pk":136}` |
+| `apex_sku_settings` | `{sku_name: {excluded, manual_units}}` | `{"singles_1g":{"excluded":true,"manual_units":null}}` |
+| `custom_skus` | `{sku_key: {name, grams_per_unit, pack_size}}` | `{"cannadart_0_8g":{"name":"CannaDart","grams_per_unit":0.8,"pack_size":1}}` |
+| `processed_decrements` | `{idempotency_key: {sku, units, timestamp}}` | `{"apex-sale-123":{"sku":"singles_0_5g","units":1,"ts":"2026-02-28T10:00:00"}}` |
+
 ### Table: finished_goods_history
 
 Historical snapshots of finished goods changes for auditing and trending.
@@ -194,6 +222,50 @@ Historical snapshots of finished goods changes for auditing and trending.
 |-------|-----------|---------|
 | idx_history_metrc | metrc_number | History for one METRC package |
 | idx_history_timestamp | timestamp | Chronological queries |
+
+#### Change Types Reference
+
+| `change_type` Value | Trigger |
+|---------------------|---------|
+| `created` | New package added via `add_package()` |
+| `deducted` | Grams or units removed via `deduct_inventory()` |
+| `added` | Grams or units added via `add_inventory()` |
+| `ordered` | Grams reserved via `place_order()` or `set_ordered()` |
+| `packed` | Grams marked packed via `pack_order()` or `set_packed()` |
+| `fulfilled` | Order completed via `complete_order()` |
+| `archived` | Package archived via `archive_package()` |
+| `restored` | Package restored via `restore_package()` |
+| `apex_units` | Apex unit counts updated |
+| `sku_settings` | Apex SKU settings changed |
+| `physical_override` | Physical inventory override set or cleared |
+| `synced` | Ordered/packed amounts atomically synced via `sync_package()` |
+
+The `details` column contains a JSON object with operation-specific data (e.g., reason, grams affected, source).
+
+#### Common Queries
+
+```sql
+-- Active packages with their available grams
+SELECT metrc_number, strain, current_grams, grams_ordered, grams_packed,
+       current_grams - grams_ordered - grams_packed AS available
+FROM finished_goods WHERE status = 'active';
+
+-- Packages with the most history entries (most active packages)
+SELECT metrc_number, COUNT(*) AS change_count
+FROM finished_goods_history
+GROUP BY metrc_number ORDER BY change_count DESC LIMIT 10;
+
+-- Recent history for a specific package
+SELECT timestamp, change_type, current_grams, details
+FROM finished_goods_history
+WHERE metrc_number = '1A40D03000013EE000015129'
+ORDER BY timestamp DESC LIMIT 20;
+
+-- All wholesale holds with package info
+SELECT wh.id, wh.metrc_number, fg.strain, wh.sku_name, wh.quantity
+FROM wholesale_holds wh
+JOIN finished_goods fg ON wh.metrc_number = fg.metrc_number;
+```
 
 ### Table: inventory
 
@@ -256,6 +328,10 @@ Inventory reservations for the wholesale team, preventing over-allocation of fin
 |-------|-----------|---------|
 | idx_wholesale_holds_metrc | metrc_number | Holds for a METRC package |
 | idx_wholesale_holds_sku | sku_name | Holds by SKU |
+
+**CASCADE Behavior:** The `metrc_number` foreign key has `ON DELETE CASCADE`. If a finished goods package is permanently deleted from the `finished_goods` table, all associated wholesale holds are automatically deleted. This is intentional but irreversible -- always archive packages instead of deleting them unless you want to remove all associated holds.
+
+**Hold Deduction:** When calculating Apex units via `calculate_apex_units()`, the system queries `wholesale_holds` to sum held quantities by SKU and subtracts them from the calculated units before returning results.
 
 ### Table: schema_version
 

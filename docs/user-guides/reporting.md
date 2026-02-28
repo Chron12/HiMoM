@@ -37,7 +37,7 @@ This chart shows how many pre-rolls were produced each day, week, or month. The 
 - **Higher bars or points** mean more production during that time period.
 - **Dips** mean less production -- possibly due to fewer batches, days off, or slower work.
 
-![The production over time chart showing daily or weekly output](../screenshots/analytics-full.png)
+![The production over time chart showing daily or weekly output](../screenshots/analytics-production-chart.png)
 
 #### Production by Size
 This chart breaks down production by pre-roll size (0.5g, 0.7g, 1.0g). It helps you see which sizes are made most often.
@@ -50,14 +50,14 @@ This chart breaks down production by pre-roll size (0.5g, 0.7g, 1.0g). It helps 
 #### Production Rate Trends
 This chart shows how production speed (pre-rolls per hour) has changed over time. A rising trend means production is getting faster.
 
-![The production rate trend chart](../screenshots/analytics-strain-performance.png)
+![The production rate trend chart](../screenshots/analytics-rate-trend.png)
 
 ### Navigating the Stats Page
 The Stats page may have buttons or tabs to switch between different views or time periods. Look for:
 - **Time period selectors** -- Let you view data for the last week, month, or all time.
 - **Size filters** -- Let you focus on just one pre-roll size.
 
-![The time period selector or filter buttons on the Stats page](../screenshots/analytics-summary-cards.png)
+![The time period selector or filter buttons on the Stats page](../screenshots/analytics-filters.png)
 
 ### If Something Goes Wrong
 - **The charts are empty** -- This usually means no batches have been completed yet, or the data has not been processed. If you have completed batches and still see empty charts, try refreshing the page.
@@ -128,7 +128,7 @@ The Archive page may have a search bar or filter options:
 - **Search** -- Type a strain name to find specific batches.
 - **Sort** -- Click column headers to sort by strain name, date, or count.
 
-![The search bar or filter options on the Archive page](../screenshots/archive.png)
+![The search bar or filter options on the Archive page](../screenshots/archive-search.png)
 
 ### If Something Goes Wrong
 - **A batch is missing from the Archive** -- The batch must be at the "Done" stage and then archived to appear here. If it is still on the main dashboard, it has not been archived yet.

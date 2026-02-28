@@ -82,7 +82,7 @@ At the very top of the page, you will see a dark bar with the app name and navig
 
 On a phone, the navigation buttons are hidden behind a **menu button** (three horizontal lines, sometimes called a "hamburger menu") in the top-left corner. Tap it to see all the navigation options in a side panel.
 
-![The navigation bar with all buttons visible on desktop](../screenshots/dashboard.png)
+![The navigation bar with all buttons visible on desktop](../screenshots/dashboard-nav-bar.png)
 
 [SCREENSHOT: The hamburger menu button on a phone screen]
 
@@ -117,13 +117,13 @@ Every batch moves through a series of stages from start to finish. Each stage ha
 | 6 | **Bagging** | Deep orange | Pre-rolls are being packaged into bags, tubes, or packs |
 | 7 | **Done** | Dark green | Batch is completely finished and ready for sale |
 
-![A few batches showing different stage badges with their colors](../screenshots/dashboard.png)
+![A few batches showing different stage badges with their colors](../screenshots/dashboard-stage-badges.png)
 
 ### Inventory Alerts
 
 If paper or cone supplies are running low, you will see an **orange alert banner** at the top of the dashboard. This tells you which size (0.5g, 0.7g, or 1.0g) is low and how many papers are left. When you see this, let your supervisor know so supplies can be reordered.
 
-![An inventory low-stock alert banner on the dashboard](../screenshots/dashboard.png)
+![An inventory low-stock alert banner on the dashboard](../screenshots/dashboard-alert-banner.png)
 
 ---
 

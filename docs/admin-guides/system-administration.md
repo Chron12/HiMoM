@@ -108,7 +108,7 @@ This is different from the admin password:
 
 The API key is auto-generated the first time it is requested. It is a 32-character URL-safe token.
 
-![PreRollTracker settings page showing the API Key section with the key displayed and a Regenerate button](../screenshots/settings-full.png)
+![PreRollTracker settings page showing the API Key section with the key displayed and a Regenerate button](../screenshots/settings-api-key.png)
 
 ### 2.3 Regenerating the API Key
 
@@ -378,6 +378,267 @@ sqlite3 preroll_tracker.db "SELECT ts, batch, strain, field, old, new FROM audit
 
 ---
 
+## 9. Finished Goods Administration
+
+Finished Goods represent completed pre-roll packages that have been assigned a METRC tag and are ready for wholesale distribution. This section covers every administrative operation you can perform on finished goods packages, from creation through archival.
+
+### 9.1 Creating New Finished Goods Packages
+
+A finished goods package should be created after a production batch reaches the **Done** stage and a METRC package tag has been generated in the state tracking system.
+
+**Steps to create a new package:**
+
+1. Navigate to the **Finished Goods** page from the main navigation.
+2. Click the **+ Add Package** button at the top of the page.
+3. Fill in the required fields:
+
+| Field | Required | Description |
+|---|---|---|
+| METRC Number | Yes | The state-issued package tag (e.g., `1A406030003B866000012345`) |
+| Strain Name | Yes | The strain associated with this package |
+| Initial Grams | Yes | The starting weight in grams as reported by METRC |
+| Notes | No | Free-text field for any additional context |
+| Source Batch ID | No | Links this package back to the production batch that produced it |
+
+4. Click **Save**. The package appears on the Finished Goods page with an **Active** status.
+
+> **What You'll See:** The new package appears as a card on the Finished Goods page showing the METRC number, strain, current grams, and any configured Apex inventory data. Active packages are displayed by default.
+
+![Finished Goods list showing active packages with their METRC numbers, strains, and current gram counts](../screenshots/finished-goods-list.png)
+
+### 9.2 Correcting Inventory (Adding and Deducting Grams)
+
+Inventory corrections are made directly from a package card on the Finished Goods page. Every addition or deduction is recorded in the audit trail for compliance purposes.
+
+#### Adding Grams
+
+Use the **+ Add** button on a package card to increase the gram count. Common reasons include:
+
+- New material transferred into an existing package
+- METRC adjustment after a manifest correction
+- Data entry correction from initial package creation
+
+**Steps:**
+
+1. Locate the package on the Finished Goods page.
+2. Click the **+ Add** button on the package card.
+3. Choose the input method:
+   - **By grams:** Enter the number of grams to add directly.
+   - **By units:** Select a unit size (0.5g, 1.0g, 6pack, 12pack) and enter the number of units. The system calculates the gram equivalent automatically.
+4. Enter an optional reason (recommended for audit purposes).
+5. Click **Confirm**. The package's gram count updates immediately.
+
+#### Deducting Grams
+
+Use the **- Deduct** button on a package card to decrease the gram count. Common reasons include:
+
+- Damaged product removed from inventory
+- Product loss (breakage, spillage)
+- Manual sale or sample not processed through the normal order system
+
+**Steps:**
+
+1. Locate the package on the Finished Goods page.
+2. Click the **- Deduct** button on the package card.
+3. Choose the input method:
+   - **By grams:** Enter the number of grams to deduct directly.
+   - **By units:** Select a unit size (0.5g, 1.0g, 6pack, 12pack) and enter the number of units.
+4. Enter an optional reason (recommended for audit purposes).
+5. Click **Confirm**. The package's gram count updates immediately.
+
+> **What You'll See:** After either operation, the package card reflects the updated gram count. The change is logged in the package history, accessible from the package detail view.
+
+![Finished Goods detail view showing package information, current grams, and action buttons](../screenshots/finished-goods-detail.png)
+
+### 9.3 Physical Inventory Overrides
+
+When a physical shelf count does not match the value tracked in the METRC system, you can set a **Physical Override** to tell PreRollTracker the actual grams on hand. This override becomes the "effective grams" used for all inventory calculations, including Apex inventory counts and wholesale hold availability.
+
+**Steps to set a Physical Override:**
+
+1. Locate the package on the Finished Goods page.
+2. Click the **⋮** (three-dot menu) on the package card.
+3. Select **Physical Override**.
+4. Enter the actual physical gram count from your shelf count.
+5. Click **Save**.
+
+> **What You'll See:** The package card displays an **orange border** to indicate that a Physical Override is active. The effective grams shown on the card reflect the override value rather than the calculated system value.
+
+**Steps to clear a Physical Override:**
+
+1. Click the **⋮** menu on the package card.
+2. Select **Physical Override**.
+3. Clear the field (set it to null or empty).
+4. Click **Save**. The orange border disappears and the system reverts to the calculated gram value.
+
+| Override State | Card Appearance | Grams Used for Calculations |
+|---|---|---|
+| No override | Normal card (no border) | System-calculated grams |
+| Override active | Orange border on card | Physical override value |
+
+### 9.4 Archiving and Restoring Packages
+
+Packages that are no longer active (fully sold, transferred, or depleted) can be archived to keep the Finished Goods page clean. Archived packages are hidden from the default view but can be restored at any time.
+
+#### Archiving a Package
+
+1. Locate the package on the Finished Goods page.
+2. Click the **⋮** menu on the package card.
+3. Select **Archive**.
+4. Confirm the action.
+
+**Prerequisite:** All wholesale holds on the package must be released before it can be archived. If holds exist, the system will display an error. Release or complete all outstanding holds first (see Section 9.6).
+
+#### Restoring an Archived Package
+
+1. On the Finished Goods page, enable **Show Archived / Orphaned** using the toggle or filter control.
+2. Locate the archived package in the list.
+3. Click the **⋮** menu on the package card.
+4. Select **Restore**.
+5. The package returns to the active list.
+
+#### Marking a Package as Orphaned
+
+An **orphan** designation means the package has weight on paper (in METRC) but no corresponding physical product on the shelf. This is a bookkeeping distinction that helps during reconciliation.
+
+1. Click the **⋮** menu on the package card.
+2. Select **Mark as Orphan**.
+
+#### Permanently Deleting a Package
+
+1. Click the **⋮** menu on the package card.
+2. Select **Delete**.
+3. Confirm the action.
+
+**Warning:** Permanent deletion is irreversible. The package record and all associated wholesale holds are removed from the database via CASCADE. Only use this for packages created in error, not for depleted packages (use Archive instead).
+
+![Finished Goods actions menu showing Archive, Physical Override, Mark as Orphan, and Delete options](../screenshots/finished-goods-actions.png)
+
+### 9.5 Configuring Apex Auto-Inventory
+
+Apex Auto-Inventory calculates unit counts from gram totals and syncs them to the Apex Trading platform so that retail stores see accurate availability. Each package can be individually configured.
+
+#### Enabling Apex for a Package
+
+1. Locate the package on the Finished Goods page.
+2. Click the **Apex ON** button on the package card.
+3. The system enables auto-calculation using default SKU settings.
+
+#### Configuring Per-SKU Settings
+
+After enabling Apex, click the **Apex ON** button again (or navigate to the Apex settings for that package) to access detailed configuration:
+
+| Setting | Description |
+|---|---|
+| **Exclude SKU** | When enabled, this SKU will not appear in the Apex inventory for this package |
+| **manual_units** | Override the calculated unit count with a fixed number |
+| **auto_calculate** | When `true`, units are recalculated from grams automatically; when `false`, the `manual_units` value is used |
+| **Custom SKUs** | Add non-standard sizes (e.g., 0.8g, CannaDart, Cocoa Blunt) with their own grams-per-unit conversion |
+
+**Steps to configure a SKU:**
+
+1. Click the **Apex ON** button on the package card to open Apex settings.
+2. For each SKU row, adjust the settings as needed:
+   - Toggle **Exclude** to hide the SKU from Apex Trading.
+   - Set **auto_calculate** to `false` and enter a **manual_units** value to override the automatic count.
+   - Click **+ Add Custom SKU** to create a non-standard size. Enter the SKU name and grams-per-unit value.
+3. Click **Save**.
+
+> **What You'll See:** The **APEX INVENTORY** section on the package card displays the calculated or manual unit counts for each active SKU. These are the values that stores see when browsing your inventory on Apex Trading.
+
+![Finished Goods card showing the APEX INVENTORY section with per-SKU unit counts](../screenshots/finished-goods-apex-inventory.png)
+
+### 9.6 Managing Wholesale Holds (Admin View)
+
+Wholesale holds reserve a portion of a package's inventory for a pending order. As an administrator, you can view and manage holds across all packages.
+
+#### Viewing All Holds
+
+Navigate to the **Wholesale** page to see a consolidated list of all active holds across every finished goods package. Each hold shows the package METRC number, customer name, grams held, and order status.
+
+#### Understanding the Order Lifecycle
+
+| Stage | Description |
+|---|---|
+| **Hold** | Grams are reserved for the order. The package's available grams decrease, but no inventory is deducted yet. |
+| **Pack** | The order is being prepared for shipment. The hold remains in place. |
+| **Complete** | The order is fulfilled. Grams are permanently deducted from the package inventory. |
+
+#### Force-Releasing a Hold
+
+If an order is cancelled or a hold was created in error:
+
+1. Locate the hold on the Wholesale page (or on the specific package's detail view).
+2. Click the **⋮** menu on the hold row.
+3. Select **Release Hold**.
+4. Confirm the action. The reserved grams return to the package's available inventory.
+
+#### Completing an Order
+
+1. Click the **⋮** menu on the hold row.
+2. Select **Complete Order**.
+3. Enter the grams to fulfill (this may differ from the original hold amount).
+4. Click **Confirm**. The specified grams are permanently deducted from the package inventory and the hold is closed.
+
+### 9.7 Exporting Finished Goods Data
+
+#### API Access
+
+Finished goods data is available programmatically through the PreRollTracker API:
+
+```
+GET https://himomstats.online/api/finished-goods/
+```
+
+This returns all packages as JSON. Authenticate with the `X-API-Key` header (see Section 2 for API key details).
+
+#### Audit History
+
+All changes to finished goods packages are recorded in the `finished_goods_history` table. This includes gram additions, deductions, overrides, archive/restore actions, and Apex configuration changes.
+
+#### SQLite Query Examples
+
+**List all active packages with current grams:**
+```
+sqlite3 preroll_tracker.db "SELECT metrc_number, strain, current_grams FROM finished_goods WHERE status = 'active' ORDER BY strain;"
+```
+
+**View recent history for a specific package:**
+```
+sqlite3 preroll_tracker.db "SELECT timestamp, action, old_value, new_value, reason FROM finished_goods_history WHERE metrc_number = '1A406030003B866000012345' ORDER BY timestamp DESC LIMIT 20;"
+```
+
+**Sum total grams across all active packages:**
+```
+sqlite3 preroll_tracker.db "SELECT SUM(current_grams) as total_grams FROM finished_goods WHERE status = 'active';"
+```
+
+![Finished Goods history view showing timestamped change records with actions and reasons](../screenshots/finished-goods-history.png)
+
+### 9.8 Weekly Reconciliation Workflow
+
+Perform this reconciliation weekly to ensure your system inventory matches both physical counts and METRC records.
+
+1. **Pull the finished goods summary.** Open the Finished Goods page and note the summary cards at the top (total active packages, total grams, total held grams).
+2. **Compare system grams to METRC.** Log in to METRC and pull a manifest or inventory report. Compare each package's gram count in PreRollTracker against the METRC value.
+3. **Conduct a physical shelf count.** Walk the vault or storage area and count the actual product on hand for each METRC tag.
+4. **Apply Physical Overrides for discrepancies.** For any package where the physical count does not match the system value, set a Physical Override (see Section 9.3). This ensures downstream calculations (Apex inventory, wholesale availability) reflect reality.
+5. **Document reasons.** Enter a note in the package's notes field explaining the discrepancy (e.g., "Physical count 42g vs system 45g — 3g breakage found during count 2026-02-28").
+6. **Review package history.** Check the history for each adjusted package to identify any unexpected changes since the last reconciliation. Look for additions or deductions that lack a documented reason.
+
+> **What You'll See:** After reconciliation, any packages with Physical Overrides active will display an orange border on their cards, giving you a quick visual indicator of where system and physical counts diverge.
+
+| Reconciliation Step | Where | What to Check |
+|---|---|---|
+| System summary | Finished Goods page (summary cards) | Total packages, total grams, total held |
+| METRC comparison | METRC portal | Per-package gram counts match |
+| Physical count | Vault / storage area | Actual product on shelf |
+| Override entry | Package card ⋮ menu → Physical Override | Set actual grams |
+| Documentation | Package notes field | Reason for discrepancy |
+| History review | Package detail → History tab | Unexpected or undocumented changes |
+
+---
+
 ## Summary
 
 | Task | How |
@@ -392,3 +653,16 @@ sqlite3 preroll_tracker.db "SELECT ts, batch, strain, field, old, new FROM audit
 | View error reports | Sentry dashboard |
 | Restart application | `sudo systemctl restart preroll-tracker` |
 | Check service status | `sudo systemctl status preroll-tracker` |
+| Create a finished goods package | Finished Goods > + Add Package |
+| Add grams to a package | Package card > + Add (by grams or units) |
+| Deduct grams from a package | Package card > - Deduct (by grams or units) |
+| Set a physical override | Package card ⋮ menu > Physical Override |
+| Archive a package | Package card ⋮ menu > Archive (release holds first) |
+| Restore an archived package | Show Archived / Orphaned > ⋮ menu > Restore |
+| Delete a package permanently | Package card ⋮ menu > Delete |
+| Enable Apex auto-inventory | Package card > Apex ON |
+| Configure Apex SKU settings | Apex ON button > per-SKU settings |
+| Release a wholesale hold | Wholesale page > ⋮ menu > Release Hold |
+| Complete a wholesale order | Wholesale page > ⋮ menu > Complete Order |
+| Export finished goods data | `GET /api/finished-goods/` |
+| Weekly reconciliation | See Section 9.8 workflow |

@@ -58,16 +58,42 @@ In the address bar at the top of your browser, type: **himomstats.online**
 
 1. Click **Finished Goods** in the navigation bar.
 2. Find the METRC package by scrolling or using the **Search** bar.
-3. Check available quantities and SKU breakdown.
+3. Use the **Status** dropdown to filter by Active, Depleted, Archived, or Orphaned.
+4. Check the **grams remaining**, **order tracking**, and **APEX Inventory** on each card.
+
+---
+
+## Finished Goods Status Reference
+
+| Status | Color | Meaning |
+|--------|-------|---------|
+| Active | Green | Has available product to order |
+| Depleted | Orange | All grams ordered, packed, or fulfilled |
+| Archived | Gray | Removed from active view |
+| Orphaned | Purple | Weight on paper, no physical product |
+
+---
+
+## SKU Types Quick Reference
+
+| SKU | Grams per Unit | Description |
+|-----|---------------|-------------|
+| 0.5g Singles | 0.5g | Individual half-gram pre-roll |
+| 1.0g Singles | 1.0g | Individual full-gram pre-roll |
+| 0.5g 6-Pack | 3.0g | Magnetic box of 6 half-gram pre-rolls |
+| 0.5g 12-Pack | 6.0g | Magnetic box of 12 half-gram pre-rolls |
+
+Custom SKUs (CannaDart, Cocoa Blunt, 0.8g Singles, etc.) may appear per strain.
 
 ---
 
 ## Create a Wholesale Hold
 
 1. Click **Wholesale** in the navigation bar.
-2. Find the product and click **Hold** or **Reserve**.
-3. Enter the **Quantity** and any **Notes**.
-4. Click **Create Hold**.
+2. Find the strain and SKU you want to reserve.
+3. Click the **Hold** button next to that SKU.
+4. Enter the **Quantity** and any **Notes**.
+5. Click **Create Hold**.
 
 ---
 
