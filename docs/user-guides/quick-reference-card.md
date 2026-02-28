@@ -21,11 +21,11 @@ In the address bar at the top of your browser, type: **himomstats.online**
 
 ## Update Production Counts
 
-1. On the dashboard, click or tap the batch you are working on.
-2. Find the count fields: **0.5g**, **0.7g**, **1.0g**.
-3. Type the **total** number of pre-rolls made so far for each size.
-4. Counts save automatically.
-5. Click **Back** or use the navigation to return to the dashboard.
+1. On the dashboard, click the **Plan** button next to the batch you are working on.
+2. Click the **size tab** at the top for the size you are rolling (0.5g, 0.7g, or 1.0g).
+3. Use the **+25**, **+50**, or **+100** buttons to add to your count.
+4. Counts save automatically (the **Saved** button turns green).
+5. Click **← Back to Admin** to return to the dashboard.
 
 ---
 
@@ -112,6 +112,8 @@ In the address bar at the top of your browser, type: **himomstats.online**
 
 | Button | What It Does |
 |---|---|
+| **Plan** | Open the Plan page for a batch (counting, centrifuge, weighing) |
+| **Edit** | Open the Edit Batch page (strain info, stage, compliance) |
 | **+ Add Strain** | Create a new batch |
 | **Finished Goods** | View completed METRC packages |
 | **Wholesale** | Manage wholesale inventory holds |

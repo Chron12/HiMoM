@@ -52,21 +52,27 @@ The system moves through these stages in order. Some transitions happen automati
 
 This is the most important thing you do in the app. When you make pre-rolls, you need to record how many you made in each size.
 
-### Updating Counts from the Dashboard
+### Updating Counts from the Plan Page
 
 1. On the **Production Dashboard**, find the batch you are working on.
-2. Click on the batch row (on a computer) or tap the batch card (on a phone). This opens the **Edit Batch** page for that batch.
-3. On the Edit Batch page, find the section labeled **Production Counts**. You will see three fields:
+2. Click the **Plan** button next to that batch. This opens the **Plan page** for that batch.
+3. At the top of the Plan page, you will see **size tabs** showing each size and its count:
    - **0.5g** -- for half-gram pre-rolls
    - **0.7g** -- for 0.7-gram pre-rolls
    - **1.0g** -- for one-gram pre-rolls
-4. Tap or click the number field for the size you are rolling.
-5. Type the **total** number you have made so far for that size. For example, if you have made 250 half-gram pre-rolls, type **250** in the 0.5g field. Do not type the number you made since your last update -- type the running total.
-6. The count saves automatically as you type. You will see the total pre-rolls number update right away.
+4. **Click the size tab** for the size you are currently rolling. The page switches to show that size's count and progress bar.
+5. Use the **+25**, **+50**, or **+100** buttons (green) to add to your count, or the **-25**, **-50**, **-100** buttons (red) to subtract if you made a mistake. The large number in the center updates immediately.
+6. The count saves automatically. You will see the **Saved** button turn green to confirm.
 
-**What You'll See:** The number in the field changes. The total pre-rolls count at the top of the batch updates to show the sum across all three sizes.
+**What You'll See:** A large count display for the active size with a progress bar showing how close you are to the planned target. The size tabs at the top always show your current count vs. planned count for all three sizes.
 
-![The Edit Batch page with the production count fields for 0.5g, 0.7g, and 1.0g](../screenshots/edit-batch-counts.png)
+![The Plan page showing size tabs at the top and large count display with +/- buttons](../screenshots/plan-page-top.png)
+
+### Switching Between Sizes
+
+To work on a different size, simply **click the size tab** at the top of the Plan page. The page instantly switches to show that size's count, progress, and centrifuge settings. You do not need to go back to the dashboard.
+
+![The Plan page after switching to the 1.0g size tab](../screenshots/plan-page-size-switch.png)
 
 ### Important Notes About Counting
 - Always enter the **total** count, not just the number made since your last entry. If you had 200 and made 50 more, type **250**.
@@ -75,8 +81,8 @@ This is the most important thing you do in the app. When you make pre-rolls, you
 - If you make a mistake, just type the correct number and it will be updated.
 
 ### If Something Goes Wrong
-- **The number didn't save** -- Check your internet connection. If you see a small error message, try refreshing the page and entering the number again.
-- **The total looks wrong** -- Make sure you entered the number in the correct size column. Double-check that you typed the total count, not just the amount since your last update.
+- **The count didn't save** -- Check your internet connection. If the **Saved** button does not turn green, try refreshing the page and using the +/- buttons again.
+- **The total looks wrong** -- Make sure you are on the correct size tab. Check the size tabs at the top to verify you are updating the right size.
 
 ---
 
@@ -125,13 +131,13 @@ The system adds up the time from all sessions to calculate your **total work hou
 
 ### Viewing Your Total Work Time
 
-1. Open the **Edit Batch** page for any batch.
-2. Look for the **Production Time** or **Work Hours** section. It shows:
+1. Open the **Plan page** for any batch (click **Plan** on the dashboard).
+2. Scroll down to the **Batch Details** section at the bottom. It shows:
    - Total work hours across all sessions
    - When the batch started production
    - When the batch was finished (if applicable)
 
-![The production time section on the Edit Batch page showing total work hours and session information](../screenshots/edit-batch-counts.png)
+![The Plan page showing batch details and production time at the bottom](../screenshots/plan-page-batch-details.png)
 
 ### If Something Goes Wrong
 - **The timer seems wrong** -- The timer runs based on when the stage was changed. If someone forgot to change the stage back to "Ground" during a break, the timer may include break time. Ask your supervisor to adjust if needed.
@@ -143,26 +149,26 @@ The system adds up the time from all sessions to calculate your **total work hou
 
 If your production process uses a centrifuge, you can record the settings used for each batch. This helps the system learn and recommend better settings over time.
 
-1. Open the **Edit Batch** page for the batch you want to update.
-2. Find the **Centrifuge Settings** section. You will see fields for each pre-roll size (0.5g, 0.7g, 1.0g).
-3. For each size you are running, fill in the following:
+1. Open the **Plan page** for the batch (click **Plan** on the dashboard).
+2. Scroll down to the **Centrifuge Settings** section on the left side. The settings shown are for the **currently selected size** — use the size tabs in the centrifuge section (0.5g, 0.7g, 1.0g) to switch between sizes.
+3. For the size you are running, fill in the following:
    - **RPM** -- The speed setting on the centrifuge (for example, 1200).
    - **Time (seconds)** -- How long each cycle runs (for example, 45).
    - **Cycles** -- How many cycles you ran (usually 1 or 2).
    - **Fill Gauge Cycle 1** -- The fill gauge reading for the first cycle (a number from 1 to 12).
    - **Fill Gauge Cycle 2** -- The fill gauge reading for the second cycle (only if you ran 2 cycles).
-   - **Machine** -- Which machine you used (Silver Bullet or Lab Geek).
-4. Click **Save** to store the settings.
+   - **Priority Mode** -- Choose between **Target Weight** or **Visual Quality** depending on your focus.
+4. Click **Save Settings** to store the centrifuge settings.
 
-**What You'll See:** The centrifuge settings are saved and will appear on the batch detail page.
+**What You'll See:** The centrifuge settings are saved for that size. The section also shows which **machine** you are using (Silver Bullet or Lab Geek).
 
-![The centrifuge settings section on the Edit Batch page with fields for RPM, time, cycles, and fill gauge](../screenshots/edit-batch-centrifuge-settings.png)
+![The Centrifuge Settings and Plan Targets sections on the Plan page](../screenshots/plan-page-centrifuge-targets.png)
 
 ### Centrifuge Recommendations
 
-After enough batches of the same strain have been processed, the system can recommend centrifuge settings based on past results. Look for a **Recommendations** section or link on the batch edit page. You can also visit the **Centrifuge** page from the navigation menu to use the force calculator tool.
+After enough batches of the same strain have been processed, the system can recommend centrifuge settings based on past results. Look for the green **Recommendation** card at the top of the Centrifuge Settings section — it shows recommended RPM, time, cycles, and fill gauge based on previous batches of the same strain. Click **Apply Recommended** to use the suggested settings.
 
-![A centrifuge recommendation card showing suggested settings based on previous batches](../screenshots/edit-batch-centrifuge.png)
+![The full Plan page showing centrifuge recommendations and plan targets](../screenshots/plan-page-full.png)
 
 ### If Something Goes Wrong
 - **There are no recommendations** -- The system needs data from at least a few completed batches of the same strain before it can make recommendations. Keep recording settings and they will appear over time.
@@ -174,14 +180,14 @@ After enough batches of the same strain have been processed, the system can reco
 
 To maintain quality, you may need to record weight checks during production. The system tracks weight measurements for each pre-roll size.
 
-1. Open the **Edit Batch** page for the batch.
-2. Find the **Weight Log** section for the size you are checking (0.5g, 0.7g, or 1.0g).
+1. Open the **Plan page** for the batch (click **Plan** on the dashboard).
+2. Click the **Weigh Sample** button in the counting area. This opens the weight entry dialog for the currently selected size.
 3. Enter the weight measurement when prompted.
 4. Click **Save** or **Log Weight** to record the measurement.
 
 **What You'll See:** The weight is added to the running weight log for that size. The system calculates a **running yield percentage** that tells you how accurate your pre-rolls are compared to the target weight.
 
-![The weight log section showing recorded measurements and the running yield percentage](../screenshots/edit-batch-full.png)
+![The Plan page showing the Weigh Sample button and counting controls](../screenshots/plan-page-top.png)
 
 ### Understanding Yield Percentage
 - **High yield (green)** -- Your pre-rolls are close to the target weight. Good job.
@@ -198,13 +204,13 @@ To maintain quality, you may need to record weight checks during production. The
 
 The system calculates how many pre-rolls you make per hour. This helps track productivity and plan future batches.
 
-1. The production rate appears on the **Edit Batch** page for any batch that is "In progress" or later.
-2. Look for the **Production Rate** section. It shows:
-   - **Current rate** -- Your pre-rolls per hour right now based on the current session.
-   - **Average rate** -- Your average rate across all sessions for this batch.
-   - **Best rate** -- The highest rate you achieved during this batch.
+1. Open the **Plan page** for any batch that is "In progress" or later.
+2. The Plan page shows a **Today's Production** widget that tracks your output for the current session. Additionally, the **Batch Details** section at the bottom shows:
+   - **Total work hours** across all sessions
+   - **Production rate** -- pre-rolls per hour
+   - **Progress** toward planned targets for each size
 
-![The production rate section showing current, average, and best rates](../screenshots/edit-batch-full.png)
+![The Plan page showing today's production tracking and batch details](../screenshots/plan-page-full.png)
 
 ### How the Rate is Calculated
 

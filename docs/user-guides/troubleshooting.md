@@ -78,8 +78,8 @@ If you entered production counts but they do not seem to have saved, follow thes
 
 1. Go back to the **Production Dashboard**.
 2. Find the batch you were updating.
-3. Click or tap on it to open the Edit Batch page.
-4. Look at the count fields (0.5g, 0.7g, 1.0g). Do the numbers match what you entered?
+3. Click **Plan** to open the Plan page for that batch.
+4. Check the size tabs at the top (0.5g, 0.7g, 1.0g). Do the numbers match what you entered?
 
 ### Check #2: Check Your Internet Connection
 
@@ -87,7 +87,7 @@ Counts are saved to the server over the internet. If your connection drops, the 
 
 1. Look at the Wi-Fi or cell signal icon on your device. Is it showing a connection?
 2. Try loading another page or website. If nothing loads, your internet is down.
-3. Once your internet is back, go to the Edit Batch page and re-enter your counts.
+3. Once your internet is back, go to the Plan page and re-enter your counts.
 
 ### Check #3: Did You See an Error Message?
 
@@ -98,9 +98,9 @@ If the system could not save your counts, it may have shown a brief error messag
 
 ### Check #4: Re-enter the Counts
 
-1. Open the Edit Batch page for the batch.
-2. Enter your current total counts again.
-3. Watch for a confirmation that the save was successful (the page may show updated totals, or you may see a brief success message).
+1. Open the Plan page for the batch (click **Plan** on the dashboard).
+2. Use the +/- buttons to set the correct count for each size.
+3. Watch for the **Saved** button to turn green, confirming the save was successful.
 
 ### How to Prevent This
 
@@ -108,7 +108,7 @@ If the system could not save your counts, it may have shown a brief error messag
 - **Update counts frequently** (every 50-100 pre-rolls) rather than entering a big number at the end of the day. This way, if one save fails, you only lose a small amount of data.
 - **Refresh the page** after entering counts to confirm they saved.
 
-![A successful count save showing updated totals on the Edit Batch page](../screenshots/edit-batch-counts.png)
+![A successful count save showing the Saved button on the Plan page](../screenshots/plan-page-top.png)
 
 ---
 

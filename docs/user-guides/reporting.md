@@ -83,7 +83,7 @@ The production rate tells you how many pre-rolls are made per hour. Here is how 
 
 ### Rate Metrics Explained
 
-On the Edit Batch page, you may see several rate numbers:
+On the Plan page or Edit Batch page, you may see several rate numbers:
 
 | Metric | What It Means |
 |---|---|
