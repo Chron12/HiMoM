@@ -1,4 +1,4 @@
-# Excel Health Documentation Hub
+# HiMoM Documentation Hub
 
 Cross-project documentation for PreRollTracker and ApexAPI.
 
